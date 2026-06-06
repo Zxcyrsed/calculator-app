@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор урожайности</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2d5a27">
+    <style>
+        :root {
+            --green-dark: #2d5a27;
+            --green-light: #4caf50;
+            --beige: #f5f1e8;
+            --white: #ffffff;
+            --border: #c8d6b6;
+            --accent: #ff9800;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e8f0e3, #f0f5ea);
+            padding: 10px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: var(--green-dark);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.4em; margin-bottom: 3px; }
+        .header p { opacity: 0.9; font-size: 0.8em; }
+        .form-section {
+            padding: 15px 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px 15px;
+        }
+        .field { margin-bottom: 0; }
+        .field label {
+            display: block;
+            font-weight: 600;
+            color: var(--green-dark);
+            margin-bottom: 3px;
+            font-size: 0.8em;
+        }
+        .field input {
+            width: 100%;
+            padding: 7px 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.9em;
+            transition: 0.3s;
+            background: var(--beige);
+        }
+        .field input:focus {
+            outline: none;
+            border-color: var(--green-light);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(76,175,80,0.2);
+        }
+        .btn {
+            grid-column: 1/-1;
+            background: var(--green-light);
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 5px;
+        }
+        .btn:hover { background: #388e3c; }
+        .result {
+            background: #f9fbf6;
+            border-top: 2px solid var(--green-light);
+            padding: 15px 20px;
+            display: none;
+        }
+        .result h3 { color: var(--green-dark); margin-bottom: 10px; font-size: 1.1em; }
+        .steps {
+            background: white;
+            border-radius: 8px;
+            padding: 10px;
+            line-height: 1.6;
+            font-size: 0.85em;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .final {
+            font-size: 1.1em;
+            color: var(--green-dark);
+            font-weight: bold;
+            margin-top: 8px;
+            padding: 8px;
+            background: #e8f5e9;
+            border-radius: 6px;
+        }
+        .eco {
+            margin-top: 10px;
+            background: #fff8e1;
+            padding: 10px;
+            border-radius: 6px;
+            border-left: 4px solid var(--accent);
+            font-size: 0.85em;
+        }
+        .eco strong { color: #e65100; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🌾 Простое процентное исчисление урожая</h1>
+        <p>Проект Паршакова Я.Д.</p>
+    </div>
+    <div class="form-section">
+        <div class="field">
+            <label>1. Норма высева, млн/га</label>
+            <input type="number" id="Nvys" step="0.1" placeholder="4.5">
+        </div>
+        <div class="field">
+            <label>2. Полевая всхожесть, %</label>
+            <input type="number" id="Bp" step="0.1" placeholder="85">
+        </div>
+        <div class="field">
+            <label>3. Сохранность растений, %</label>
+            <input type="number" id="Ssohr" step="0.1" placeholder="92">
+        </div>
+        <div class="field">
+            <label>4. Продуктивная кустистость</label>
+            <input type="number" id="Kkust" step="0.1" placeholder="1.2">
+        </div>
+        <div class="field">
+            <label>5. Озернённость колоса, шт.</label>
+            <input type="number" id="Z" step="1" placeholder="28">
+        </div>
+        <div class="field">
+            <label>6. Масса 1000 зёрен, г</label>
+            <input type="number" id="M1000" step="0.1" placeholder="42">
+        </div>
+        <div class="field">
+            <label>7. Сумма прибавок, %</label>
+            <input type="number" id="Prib" step="0.1" placeholder="35">
+        </div>
+        <div class="field">
+            <label>8. Сумма снижений, %</label>
+            <input type="number" id="Snizh" step="0.1" placeholder="15">
+        </div>
+        <div class="field">
+            <label>9. Потери от болезней, %</label>
+            <input type="number" id="Pbol" step="0.1" placeholder="8">
+        </div>
+        <div class="field">
+            <label>10. Потери от вредителей, %</label>
+            <input type="number" id="Pvred" step="0.1" placeholder="5">
+        </div>
+        <div class="field">
+            <label>11. Потери при уборке, %</label>
+            <input type="number" id="Pub" step="0.1" placeholder="3">
+        </div>
+        <div class="field">
+            <label>12. Цена реализации, руб./т</label>
+            <input type="number" id="Price" step="100" placeholder="15000">
+        </div>
+        <button class="btn" onclick="calculate()">📊 Рассчитать</button>
+    </div>
+    <div class="result" id="result">
+        <h3>Результаты расчёта</h3>
+        <div class="steps" id="steps"></div>
+        <div class="eco" id="eco"></div>
+    </div>
+</div>
+
+<script>
+function calculate() {
+    const fields = ['Nvys','Bp','Ssohr','Kkust','Z','M1000','Prib','Snizh','Pbol','Pvred','Pub','Price'];
+    for(let f of fields) {
+        if(document.getElementById(f).value.trim() === '') {
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('steps').innerHTML = '<span style="color:red">Заполните все поля перед расчётом.</span>';
+            document.getElementById('eco').innerHTML = '';
+            return;
+        }
+    }
+    const Nvys = parseFloat(document.getElementById('Nvys').value);
+    const Bp = parseFloat(document.getElementById('Bp').value);
+    const Ssohr = parseFloat(document.getElementById('Ssohr').value);
+    const Kkust = parseFloat(document.getElementById('Kkust').value);
+    const Z = parseFloat(document.getElementById('Z').value);
+    const M1000 = parseFloat(document.getElementById('M1000').value);
+    const Prib = parseFloat(document.getElementById('Prib').value);
+    const Snizh = parseFloat(document.getElementById('Snizh').value);
+    const Pbol = parseFloat(document.getElementById('Pbol').value);
+    const Pvred = parseFloat(document.getElementById('Pvred').value);
+    const Pub = parseFloat(document.getElementById('Pub').value);
+    const Price = parseFloat(document.getElementById('Price').value);
+
+    const Rvsh = Nvys * (Bp / 100);
+    const Rub = Rvsh * (Ssohr / 100);
+    const Sprod = Rub * Kkust;
+    const Ypot = (Sprod * Z * M1000) / 100;
+    const Ktotal = 1 + (Prib / 100) - (Snizh / 100);
+    const Yprog = Ypot * Ktotal;
+    const totalLoss = Pbol + Pvred + Pub;
+    const Yfact = Yprog * (1 - totalLoss / 100);
+    const increase = Yfact - Ypot;
+    const additionalTons = increase / 10;
+    const incomePerHa = additionalTons * Price;
+
+    document.getElementById('steps').innerHTML = 
+        `<strong>🌱 Растений после всходов:</strong> ${Rvsh.toFixed(3)} млн/га<br>
+         <strong>🌿 Растений перед уборкой:</strong> ${Rub.toFixed(3)} млн/га<br>
+         <strong>🌾 Продуктивных стеблей:</strong> ${Sprod.toFixed(4)} млн/га<br>
+         <strong>📈 Потенциальная урожайность:</strong> ${Ypot.toFixed(2)} ц/га<br>
+         <strong>⚙️ Общий корректирующий коэффициент:</strong> ${Ktotal.toFixed(2)}<br>
+         <strong>📊 Прогноз до учёта потерь:</strong> ${Yprog.toFixed(2)} ц/га<br>
+         <strong>🛡️ Суммарные потери:</strong> ${totalLoss}%<br>
+         <div class="final">✅ Итоговая урожайность: ${Yfact.toFixed(2)} ц/га</div>`;
+    document.getElementById('eco').innerHTML = 
+        `<strong>💰 Экономика (1 га):</strong> прибавка ${increase.toFixed(2)} ц/га (${additionalTons.toFixed(3)} т), доход ${incomePerHa.toFixed(0)} руб.`;
+    document.getElementById('result').style.display = 'block';
+}
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+}
+</script>
+</body>
+</html>
